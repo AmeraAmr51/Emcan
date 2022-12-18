@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 
 class CommentController extends Controller
 {
+    // Fun to get User Comments
     public function getAllCommentByUser($id)
     {
         try {
@@ -24,6 +25,8 @@ class CommentController extends Controller
         }
     }
 
+    // Fun to get All Comments
+
     public function getAllComments()
     {
         try {
@@ -37,6 +40,8 @@ class CommentController extends Controller
             return response()->json(array('status' => false, 'message' => "There is no Comments ", "error" => $e->getMessage(), 'statuscode' => 400), 400);
         }
     }
+
+    // Fun to Create New Comment
 
     public function create(Request $request)
     {
@@ -58,6 +63,8 @@ class CommentController extends Controller
             return $e->getMessage();
         }
     }
+    // Fun to Update  Comment
+
     public function update(Request $request){
         try {
             // Check if comment existed OR not 
@@ -71,6 +78,7 @@ class CommentController extends Controller
             return response()->json(array('status' => false, 'message' => "No Comment Info Found for This id", 'statuscode' => 400), 400);
         }
     }
+    // Fun to Update  Comment
     public function delete($id)
     {
         try {

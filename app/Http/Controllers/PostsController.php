@@ -14,6 +14,9 @@ class PostsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+
+     // Fun to get User'sPosts
     public function getAllPostByUser($id)
     {
         try {
@@ -28,6 +31,7 @@ class PostsController extends Controller
         }
     }
 
+    // Fun to get All Posts
     public function getAllPosts()
     {
         try {
@@ -42,6 +46,7 @@ class PostsController extends Controller
         }
     }
 
+// Fun to Create New Post
 public function create(Request $request)
 {
     DB::beginTransaction();
@@ -68,6 +73,7 @@ public function create(Request $request)
             return $e->getMessage();
         }
     }
+    // Fun to Update Post
     public function update(Request $request){
         try {
             // Check if post existed OR not 
@@ -82,6 +88,7 @@ public function create(Request $request)
             return response()->json(array('status' => false, 'message' => "No Post Info Found for This id", 'statuscode' => 400), 400);
         }
     }
+    // Fun to Delete Post
     public function delete($id){
         try {
             $post = Post::where('id',$id)->first();

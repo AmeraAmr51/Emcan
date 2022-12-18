@@ -25,6 +25,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('/register', [UserController::class, 'register']);
 Route::get('/login', [UserController::class, 'login'])->name('login');
 
+//-------------------Admin Reouts----------------------------
+
 Route::middleware('checkRole:Admin')->group(function () {
     Route::post('/posts', [PostsController::class, 'getAllPosts']);
     Route::post('/comments', [CommentController::class, 'getAllComments']);
@@ -33,19 +35,23 @@ Route::middleware('checkRole:Admin')->group(function () {
     
 });
 
+//-------------------Auther Reouts----------------------------
 
 Route::middleware('checkRole:Auther')->group(function () {
 
+    //-------------------Posts Reout----------------------------
+
     Route::get('/posts/{user_id}', [PostsController::class, 'getAllPostByUser']);
     Route::Post('post', [PostsController::class, 'create']);
-    Route::post('post/{id}', [PostsController::class, 'delete']);
-    Route::post('update_post/{id}', [PostsController::class, 'update']);
+    Route::post('post/del/{id}', [PostsController::class, 'delete']);
+    Route::post('post/edit/{id}', [PostsController::class, 'update']);
 
 
+//-------------------Comments Reout----------------------------
     Route::get('/comments/{user_id}', [CommentController::class, 'getAllCommentByUser']);
     Route::Post('/comment', [CommentController::class, 'create']);
-    Route::post('update_comment/{id}', [CommentController::class, 'update']);
-    Route::post('/comment/{id}', [CommentController::class, 'delete']);
+    Route::post('comment/edit/{id}', [CommentController::class, 'update']);
+    Route::post('comment/del/{id}', [CommentController::class, 'delete']);
 
 
 
