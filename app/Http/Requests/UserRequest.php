@@ -27,19 +27,19 @@ class UserRequest extends FormRequest
      */
     public function rules()
     {
-        if($this->path() == "api/register"){
+        if($this->path() == "register"){
         return [
 
             //
                 'email'=>'required|email|unique:users,email',
-                'phone_number'=>'size:11',
+                'phone'=>'size:11',
                 'username'=>'required|string|unique:users,username',
                 'password'=>'required|min:8',
             
 
         ];
         }
-        if($this->path() == "api/login"){
+        if($this->path() == "login"){
             return [
     
                 //
@@ -49,7 +49,7 @@ class UserRequest extends FormRequest
     
             ];
             }
-            if($this->path() == "api/user/update"){
+            if($this->path() == "user/update"){
                 return [
         
                     //

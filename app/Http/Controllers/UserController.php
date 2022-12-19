@@ -7,60 +7,65 @@ use App\Models\User;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 
 class UserController extends Controller
 {
-    //
+    //Fun Return the register view 
+    public function indexRegister()
+    {
+        return view('register');
+    }
+
+    // Fun to create new user 
     public function register(UserRequest $request)
     {
-        DB::beginTransaction();
         try {
-            // Check if user existed OR not 
-            $check = User::where('username', $request['username'])->first();
+            DB::beginTransaction();
+            if (isset($request['submit'])) {
+                $user = User::create([
+                    'username' => $request->username,
+                    'email' => $request->email,
+                    'phone' => $request->phone,
+                    'role_id' => 2,
+                    'password' => Hash::make($request->password)
 
-            if ($check)
-                return response()->json(array('status' => false, 'message' => "The UserName  is Already Existed", 'statuscode' => 400), 400);
-
-
-            $user = User::create([
-                'username' => $request['username'],
-                'password' => Hash::make($request['password']),
-                'email' => $request['email'],
-                'phone' => $request['phone'],
-
-            ]);
-            $user->save();
-
-            DB::commit();
-            return response()->json(array('status' => true, 'message' => "Thank You For Your Registration", 'statuscode' => 200), 200);
+                ]);
+                $user->save();
+                DB::commit();
+                return redirect()->route('home');
+            }
         } catch (Exception $e) {
             DB::rollBack();
-            return $e->getMessage();
+            return back()->with('error', __("word.same_error"));
         }
     }
 
+    // Fun to Return Login view
+    public function indexLogin()
+    {
+        return view('login');
+    }
 
-    public function login(Request $request)
+    // Fun to login 
+    public function login(UserRequest $request)
     {
         try {
-            $data = $request->only('username', 'password');
-            $username = $data['username'];
-            $password = $data['password'];
+            if (isset($request['submit'])) {
 
-            $user = User::where('username', $username)->first();
-            if (empty($user)) {
-                return response()->json(array('status' => false, 'message' => "No User Found", 'statuscode' => 400), 400);
-            } elseif (Hash::check($password, $user->password)) {
-                return response()->json(array('status' => true, 'message' => "success", 'statuscode' => 200, 'user_data' => $user));
+                $username = $request->username;
+                $password = $request->password;
+                $user = User::where('username', $username)->first();
+                if (Hash::check($password, $user->password)) {
+                    return redirect()->route('home');
+                }
             }
-
-
-            return response()->json(array('status' => false, 'message' => "user name and password don't match", 'statuscode' => 400), 400);
         } catch (Exception $e) {
 
             return $e->getMessage();
+            return back()->with('error', __("word.same_error"));
         }
     }
 
@@ -68,16 +73,20 @@ class UserController extends Controller
     public function getUsers()
     {
         try {
-        $users = User::with('projects')->get() ;
-        return $users;
-       
-            
-         } catch (Exception) {
-            return response()->json(array('status' => false, 'message' => "There is no Users", 'statuscode' => 400), 400);
-
+            $users = User::with('projects')->get();
+            return $users;
+        } catch (Exception) {
+            // return response()->json(array('status' => false, 'message' => "There is no Users", 'statuscode' => 400), 400);
         }
     }
 
-
-    
+    public function index()
+    {
+        return view('welcome');
+    }
+    public function logout()
+    {
+        Auth::guard('web')->logout();
+        return redirect(route('login'));
+    }
 }
